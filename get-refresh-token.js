@@ -3,10 +3,9 @@ const fetch = require('node-fetch');
 const { URLSearchParams } = require('url');
 require('dotenv').config();
 
-// Must match your Spotify Dashboard exactly: http://localhost:8080/callback
-const PORT = 8080;
-const HOST = 'localhost';
-const REDIRECT_URI = `http://${HOST}:${PORT}/callback`;
+// Must match your Spotify Dashboard exactly: http://127.0.0.1:8888/callback
+const PORT = 8888;
+const REDIRECT_URI = `http://127.0.0.1:${PORT}/callback`;
 const SCOPES = 'playlist-modify-public playlist-modify-private';
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;
@@ -21,7 +20,7 @@ const authUrl = `https://accounts.spotify.com/authorize?response_type=code&clien
 
 const server = http.createServer(async (req, res) => {
   if (req.url.startsWith('/callback')) {
-    const url = new URL(req.url, `http://${HOST}:${PORT}`);
+    const url = new URL(req.url, `http://127.0.0.1:${PORT}`);
     const code = url.searchParams.get('code');
 
     if (code) {
@@ -66,10 +65,9 @@ const server = http.createServer(async (req, res) => {
       res.end('Authorization failed: code not found.');
     }
   }
-}).listen(PORT, HOST, () => {
-  console.log('\n🚀 Spotify Refresh Token Helper (Localhost Mode)');
+}).listen(PORT, '0.0.0.0', () => { // Listen on all interfaces to avoid connection errors
+  console.log('\n🚀 Spotify Refresh Token Helper (127.0.0.1 Mode)');
   console.log('1. Visit this URL in your browser:');
   console.log(`\n   ${authUrl}\n`);
   console.log('2. Log in and click "Agree".');
-  console.log('3. The script will automatically catch the response.');
 });
