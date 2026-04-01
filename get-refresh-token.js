@@ -5,8 +5,8 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const PORT = 8888;
-const REDIRECT_URI = `http://127.0.0.1:${PORT}/callback`;
+const PORT = 8080;
+const REDIRECT_URI = `http://localhost:${PORT}/callback`;
 const SCOPES = 'playlist-modify-public playlist-modify-private';
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;
@@ -22,7 +22,7 @@ const authUrl = `https://accounts.spotify.com/authorize?response_type=code&clien
 
 const server = http.createServer(async (req, res) => {
   if (req.url.startsWith('/callback')) {
-    const url = new URL(req.url, `http://127.0.0.1:${PORT}`);
+    const url = new URL(req.url, `http://localhost:${PORT}`);
     const code = url.searchParams.get('code');
 
     if (code) {
@@ -65,7 +65,7 @@ const server = http.createServer(async (req, res) => {
       res.end('Authorization failed: code not found.');
     }
   }
-}).listen(PORT, '127.0.0.1', () => {
+}).listen(PORT, 'localhost', () => {
   console.log('\n🚀 Spotify Auth Helper Started');
   console.log('1. Visit this URL in your browser:');
   console.log(`\n   ${authUrl}\n`);
