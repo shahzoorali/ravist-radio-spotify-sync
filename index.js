@@ -47,6 +47,17 @@ function buildTrackKey(artist, track) {
 /* ---------- RADIO ---------- */
 
 async function fetchRadioMetadata() {
+  // Try internal address first (more reliable on server)
+  try {
+    const res = await fetch('http://localhost:3001/api/radio/metadata');
+    if (res.ok) {
+      const json = await res.json();
+      return json.data;
+    }
+  } catch (e) {
+    // Fallback to .env URL
+  }
+
   const res = await fetch(process.env.RADIO_METADATA_URL);
   if (!res.ok) {
     throw new Error(`Metadata fetch failed: ${res.status}`);
